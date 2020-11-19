@@ -188,7 +188,7 @@ def prepare_angles(sz_path, sa_path, vz_path, va_path, satsen, band, window=None
 def sec(angle):
     """Calculate secant.
 
-    Parameters:
+    Args:
         angle (numpy array): raster band of angle.
 
     Returns:
