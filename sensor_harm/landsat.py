@@ -1,21 +1,30 @@
-# Python Native
-import glob
+#
+# This file is part of Sensor Harmonization
+# Copyright (C) 2020 INPE.
+#
+# Sensor Harmonization (Landsat-8 and Sentinel-2) is free software; you can redistribute it and/or modify it
+# under the terms of the MIT License; see LICENSE file for more details.
+#
+
+"""Sensor Harmonization of Landsat data products."""
+
 import logging
 import re
 import shutil
 from pathlib import Path
-# Sensorharm
+from typing import List, Optional, Tuple
+
+# sensor-harm
 from .harmonization_model import process_NBAR
 
 
-def get_landsat_angles(productdir):
-    """
-        Get Landsat angle bands file path.
+def get_landsat_angles(productdir: str) -> Tuple[str, str, str, str]:
+    """Get Landsat angle bands file path.
 
-        Parameters:
-            productdir (str): path to directory containing angle bands.
-        Returns: 
-            sz_path, sa_path, vz_path, va_path: file paths to solar zenith, solar azimuth, view (sensor) zenith and vier (sensor) azimuth.
+    Args:
+        productdir (str): path to directory containing angle bands.
+    Returns:
+        sz_path, sa_path, vz_path, va_path: file paths to solar zenith, solar azimuth, view (sensor) zenith and vier (sensor) azimuth.
     """
     img_list = list(productdir.glob('**/*.tif'))
     logging.info('Load Landsat Angles')
@@ -31,7 +40,8 @@ def get_landsat_angles(productdir):
     return sz_path, sa_path, vz_path, va_path
 
 
-def get_landsat_bands(satsen):
+def get_landsat_bands(satsen: str) -> Optional[List[str]]:
+    """Retrieve the bands which can be harmonized in Landsat data products."""
     if satsen == 'LT5' or satsen == 'LE7':
         return ['sr_band1', 'sr_band2', 'sr_band3', 'sr_band4', 'sr_band5', 'sr_band7']
     elif satsen == 'LC8':
@@ -39,41 +49,44 @@ def get_landsat_bands(satsen):
     return
 
 
-def landsat_harmonize(satsen, productdir, target_dir=None):
-    """
-        Prepare Landsat-7 NBAR.
+def landsat_harmonize(satsen: str, productdir: str, target_dir: Optional[str] = None):
+    """Prepare Landsat-7 NBAR.
 
-        Parameters:
-            productdir (str): path to directory containing angle bands.
-            target_dir (str): path to output result images.
-        Returns:
-            str: path to folder containing result images.
+    Args:
+        productdir: path to directory containing angle bands.
+        target_dir: path to output result images.
+
+    Returns:
+        str: path to folder containing result images.
     """
     productdir = Path(productdir)
     target_dir = Path(target_dir)
 
-    print(f'Loading Angles from {productdir} ...')
+    logging.info(f'Loading Angles from {productdir} ...')
     sz_path, sa_path, vz_path, va_path = get_landsat_angles(productdir)
 
     if target_dir is None:
         target_dir = productdir.joinpath(Path('HARMONIZED_DATA'))
+
     target_dir.mkdir(parents=True, exist_ok=True)
 
     bands = get_landsat_bands(satsen)
 
-    print('Harmonization ...')
     process_NBAR(productdir, bands, sz_path, sa_path, vz_path, va_path, satsen, target_dir)
 
     # Copy quality band
     pattern = re.compile('.*pixel_qa.*')
     img_list = list(productdir.glob('**/*.tif'))
     matching_pattern = list(item for item in img_list if pattern.match(str(item)))
+
     if len(matching_pattern) != 0:
         qa_path = matching_pattern[0]
         shutil.copy(qa_path, target_dir)
+
     pattern = re.compile('.*Fmask4.*')
     img_list = list(productdir.glob('**/*.tif'))
     matching_pattern = list(item for item in img_list if pattern.match(str(item)))
+
     if len(matching_pattern) != 0:
         qa_path = matching_pattern[0]
         shutil.copy(qa_path, target_dir)

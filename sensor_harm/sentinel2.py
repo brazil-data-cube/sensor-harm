@@ -1,25 +1,37 @@
+#
+# This file is part of Sensor Harmonization
+# Copyright (C) 2020 INPE.
+#
+# Sensor Harmonization (Landsat-8 and Sentinel-2) is free software; you can redistribute it and/or modify it
+# under the terms of the MIT License; see LICENSE file for more details.
+#
+
+"""Sensor Harmonization of Sentinel 2A/2B data products."""
+
 # Python Native
-import glob
 import logging
 import os
 import re
 from pathlib import Path
+from typing import Optional
+
 # 3rdparty
 import s2angs
-# Sensorharm
+
+# sensor-harm
 from .harmonization_model import process_NBAR
 
 
-def sentinel_harmonize_SAFE(safel1c, safel2a, target_dir=None, apply_bandpass=True):
-    """
-        Prepare Sentinel-2 NBAR from Sen2cor.
+def sentinel_harmonize_SAFE(safel1c: str, safel2a: str, target_dir: Optional[str] = None, apply_bandpass: bool = True):
+    """Prepare Sentinel-2 NBAR from Sen2cor.
 
-        Parameters:
-            safel1c (str): path to SAFEL1C directory.
-            safel2a (str): path to SAFEL2A directory.
-            target_dir (str): path to output result images.
-        Returns:
-            str: path to folder containing result images.
+    Args:
+        safel1c (str): path to SAFEL1C directory.
+        safel2a (str): path to SAFEL2A directory.
+        target_dir (str): path to output result images.
+        apply_bandpass - Apply the band pass processing. Default is True.
+    Returns:
+        str: path to folder containing result images.
     """
     # Generating Angle bands
     sz_path, sa_path, vz_path, va_path = s2angs.gen_s2_ang(str(safel1c))
@@ -52,17 +64,17 @@ def sentinel_harmonize_SAFE(safel1c, safel2a, target_dir=None, apply_bandpass=Tr
 
 
 def sentinel_harmonize_sr(safel1c, sr_dir, target_dir, apply_bandpass=True):
-    """
-        Prepare Sentinel-2 NBAR from LaSRC.
+    """Prepare Sentinel-2 NBAR from LaSRC.
 
-        Parameters:
-            safel1c (str): path to SAFEL1C directory.
-            sr_dir (str): path to directory containing surface reflectance.
-            target_dir (str): path to output result images.
-        Returns:
-            str: path to folder containing result images.
-    """
+    Args:
+        safel1c (str): path to SAFEL1C directory.
+        sr_dir (str): path to directory containing surface reflectance.
+        target_dir (str): path to output result images.
+        apply_bandpass - Apply the band pass processing. Default is True.
 
+    Returns:
+        str: path to folder containing result images.
+    """
     # Generating Angle bands
     sz_path, sa_path, vz_path, va_path = s2angs.gen_s2_ang(str(safel1c))
 
@@ -81,13 +93,12 @@ def sentinel_harmonize_sr(safel1c, sr_dir, target_dir, apply_bandpass=True):
 
 
 def sentinel_harmonize(safel1c, reflectance_data, target_dir, apply_bandpass=True):
-    """
-        Checks if input surface reflectance is from Sen2cor or LaSRC and direct NBAR processing.
+    """Check if input surface reflectance is from Sen2cor or LaSRC and direct NBAR processing.
 
-        Parameters:
-            safel1c (str): path to SAFEL1C directory.
-            reflectance_data (str): path to directory containing surface reflectance.
-            target_dir (str): path to output result images.
+    Args:
+        safel1c (str): path to SAFEL1C directory.
+        reflectance_data (str): path to directory containing surface reflectance.
+        target_dir (str): path to output result images.
     """
     safel1c = Path(safel1c)
     reflectance_data = Path(reflectance_data)
