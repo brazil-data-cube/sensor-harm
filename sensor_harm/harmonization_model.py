@@ -390,7 +390,7 @@ def process_NBAR(img_dir, bands, sz_path, sa_path, vz_path, va_path, satsen, out
         imgs_in_dir = os.listdir(img_dir)
         logging.debug(list(filter(r.match, imgs_in_dir)))
         input_file = Path(list(filter(r.match, imgs_in_dir))[0])
-        output_file = out_dir.joinpath(Path(input_file.name.replace('_sr_', '_NBAR_')).with_suffix('.tif'))
+        output_file = out_dir.joinpath(Path(input_file.name.replace('_sr_', '_nbar_')).with_suffix('.tif'))
         img_path = img_dir.joinpath(input_file)
 
         # Prepare template band
