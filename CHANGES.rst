@@ -10,13 +10,17 @@ Changes
 =======
 
 
-Version 0.2.0
--------------
+Version 0.2.0 (2020-12-03)
+--------------------------
 
+- Add support to harmonize the data products Landsat-5, Landsat-7, Landsat-8 and Sentinel-2;
 
-Released 2020
+- Algorithm model based in W. Lucht, C. B. Schaaf and A. H. Strahler, "`An algorithm for the retrieval of albedo from space using semiempirical BRDF models," <https://ieeexplore.ieee.org/document/841980>`_ in IEEE Transactions on Geoscience and Remote Sensing, vol. 38, no. 2, pp. 977-998, March 2000, doi: 10.1109/36.841980.
 
+  - The coefficients are based in *Roy, D. P., Zhang, H. K., Ju, J., Gomez-Dans, J. L., Lewis, P. E., Schaaf, C. B., Sun Q., Li J., Huang H., & Kovalskyy, V. (2016). "A general method to normalize Landsat reflectance data to nadir BRDF adjusted reflectance." Remote Sensing of Environment, 176, 255-271.*
+
+- Documentation system based on Sphinx.
 
 - Source code versioning based on `Semantic Versioning 2.0.0 <https://semver.org/>`_.
 
-- License: `MIT <https://github.com/brazil-data-cube/sensor-harm/blob/master/LICENSE>`_.
+- License: `MIT <https://github.com/brazil-data-cube/sensor-harm/blob/main/LICENSE>`_.

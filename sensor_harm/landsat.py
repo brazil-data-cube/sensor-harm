@@ -18,7 +18,7 @@ from typing import List, Optional, Tuple
 from .harmonization_model import process_NBAR
 
 
-def get_landsat_angles(productdir: str) -> Tuple[str, str, str, str]:
+def get_landsat_angles(productdir: str, scene_id: str) -> Tuple[str, str, str, str]:
     """Get Landsat angle bands file path.
 
     Args:
@@ -26,7 +26,7 @@ def get_landsat_angles(productdir: str) -> Tuple[str, str, str, str]:
     Returns:
         sz_path, sa_path, vz_path, va_path: file paths to solar zenith, solar azimuth, view (sensor) zenith and vier (sensor) azimuth.
     """
-    img_list = list(productdir.glob('**/*.tif'))
+    img_list = list(productdir.glob(f'**/{scene_id}*.tif'))
     logging.info('Load Landsat Angles')
     pattern = re.compile('.*_solar_zenith_.*')
     sz_path = list(item for item in img_list if pattern.match(str(item)))[0]
@@ -49,10 +49,11 @@ def get_landsat_bands(satsen: str) -> Optional[List[str]]:
     return
 
 
-def landsat_harmonize(satsen: str, productdir: str, target_dir: Optional[str] = None):
+def landsat_harmonize(satsen: str, scene_id: str, productdir: str, target_dir: Optional[str] = None):
     """Prepare Landsat-7 NBAR.
 
     Args:
+        satsen: Scene Satellite
         productdir: path to directory containing angle bands.
         target_dir: path to output result images.
 
@@ -63,7 +64,7 @@ def landsat_harmonize(satsen: str, productdir: str, target_dir: Optional[str] = 
     target_dir = Path(target_dir)
 
     logging.info(f'Loading Angles from {productdir} ...')
-    sz_path, sa_path, vz_path, va_path = get_landsat_angles(productdir)
+    sz_path, sa_path, vz_path, va_path = get_landsat_angles(productdir, scene_id)
 
     if target_dir is None:
         target_dir = productdir.joinpath(Path('HARMONIZED_DATA'))
@@ -72,7 +73,7 @@ def landsat_harmonize(satsen: str, productdir: str, target_dir: Optional[str] = 
 
     bands = get_landsat_bands(satsen)
 
-    process_NBAR(productdir, bands, sz_path, sa_path, vz_path, va_path, satsen, target_dir)
+    process_NBAR(productdir, scene_id, bands, sz_path, sa_path, vz_path, va_path, satsen, target_dir)
 
     # Copy quality band
     pattern = re.compile('.*pixel_qa.*')
