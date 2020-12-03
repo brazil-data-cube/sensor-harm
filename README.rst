@@ -16,17 +16,12 @@ Sensor Harmonization (Landsat-8 and Sentinel-2)
         :alt: Software License
 
 
-.. image:: https://travis-ci.org/brazil-data-cube/sensor-harm.svg?branch=master
-        :target: https://travis-ci.org/brazil-data-cube/sensor-harm
-        :alt: Build Status
-
-
 .. image:: https://coveralls.io/repos/github/brazil-data-cube/sensor-harm/badge.svg?branch=master
         :target: https://coveralls.io/github/brazil-data-cube/sensor-harm?branch=master
         :alt: Code Coverage Test
 
 
-.. image:: https://readthedocs.org/projects/sensor_harm/badge/?version=latest
+.. image:: https://readthedocs.org/projects/sensor-harm/badge/?version=latest
         :target: https://sensor_harm.readthedocs.io/en/latest/
         :alt: Documentation Status
 

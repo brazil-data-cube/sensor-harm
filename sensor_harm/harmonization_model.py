@@ -340,7 +340,7 @@ def bandpassHLS_1_4(img, band, satsen):
         img = numpy.add(numpy.multiply(img, slope), offset)
 
     elif satsen == 'S2B':
-        print("S2B")
+        logging.debug("S2B")
         if band == 'coastal':  # UltraBlue/coastal #MODIS don't have this band # B01
             slope = 0.9959
             offset = -0.0002
@@ -368,28 +368,35 @@ def bandpassHLS_1_4(img, band, satsen):
     return img
 
 
-def process_NBAR(img_dir, bands, sz_path, sa_path, vz_path, va_path, satsen, out_dir, apply_bandpass=True):
+def process_NBAR(img_dir, scene_id: str, bands, sz_path, sa_path, vz_path, va_path, satsen, out_dir, apply_bandpass=True):
     """Calculate Normalized BRDF Adjusted Reflectance (NBAR).
 
     Args:
         img_dir (str): input directory.
         bands (list): list of bands to process.
-        sz_path (array): solar zenith angle.
-        sa_path (array): solar azimuth angle.
-        vz_path (array): view (sensor) zenith angle.
-        va_path (array): view (sensor) azimuth angle.
+        sz_path (str): solar zenith angle.
+        sa_path (str): solar azimuth angle.
+        vz_path (str): view (sensor) zenith angle.
+        va_path (str): view (sensor) azimuth angle.
         satsen (str): satellite sensor (S2A or S2B), used for bandpass.
         out_dir: output directory.
     """
     nodata = -9999
 
     for b in bands:
-        print(f"Harmonizing band {b} ...")
+        logging.info(f"Harmonizing band {b} ...")
         # Search for input file
         r = re.compile('.*_{}.tif$|.*_{}.*jp2$'.format(b, b))
         imgs_in_dir = os.listdir(img_dir)
         logging.debug(list(filter(r.match, imgs_in_dir)))
-        input_file = Path(list(filter(r.match, imgs_in_dir))[0])
+
+        # TODO: We should use file name. Check which of them have same filename and try to get from some angle band
+        if scene_id.startswith('S2'):
+            input_file = Path(list(filter(r.match, imgs_in_dir))[0])
+        else:
+            _entry = list(Path(img_dir).glob(f'{scene_id}_{b}.tif'))[0]
+            input_file = Path(_entry.name)
+
         output_file = out_dir.joinpath(Path(input_file.name.replace('_sr_', '_nbar_')).with_suffix('.tif'))
         img_path = img_dir.joinpath(input_file)
 
@@ -405,7 +412,7 @@ def process_NBAR(img_dir, bands, sz_path, sa_path, vz_path, va_path, satsen, out
         band_coef = brdf_coefficients[band_common_name]
 
         for _, window in tilelist:
-            # print(f"Harmonizing band {b} window {window}")
+            logging.debug(f"Harmonizing band {b} window {window}")
             row_offset = window.row_off + window.height
             col_offset = window.col_off + window.width
 
@@ -426,7 +433,7 @@ def process_NBAR(img_dir, bands, sz_path, sa_path, vz_path, va_path, satsen, out
         # Check if apply bandpass
         if apply_bandpass:
             if (satsen == 'S2A') or (satsen == 'S2B'):
-                print("Performing bandpass ...")
+                logging.info("Performing bandpass ...")
                 nbar = bandpassHLS_1_4(nbar, consult_band(b, satsen), satsen).astype(profile['dtype'])
 
         nbar[numpy.isnan(nbar)] = nodata
