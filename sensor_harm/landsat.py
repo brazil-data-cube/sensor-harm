@@ -45,7 +45,7 @@ def get_landsat_bands(satsen: str) -> Optional[List[str]]:
     if satsen == 'LT5' or satsen == 'LE7':
         return ['sr_band1', 'sr_band2', 'sr_band3', 'sr_band4', 'sr_band5', 'sr_band7']
     elif satsen == 'LC8':
-        return ['sr_band2', 'sr_band3', 'sr_band4', 'sr_band5', 'sr_band6', 'sr_band7']
+        return ['SR_B2', 'SR_B3', 'SR_B4', 'SR_B5', 'SR_B6', 'SR_B7']
     return
 
 
