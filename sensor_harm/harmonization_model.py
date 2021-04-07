@@ -387,7 +387,7 @@ def process_NBAR(img_dir, scene_id: str, bands, sz_path, sa_path, vz_path, va_pa
         satsen (str): satellite sensor (S2A or S2B), used for bandpass.
         out_dir: output directory.
     """
-    nodata = -9999
+    nodata = 0
 
     for b in bands:
         logging.info(f"Harmonizing band {b} ...")
