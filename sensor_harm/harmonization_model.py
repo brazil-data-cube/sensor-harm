@@ -79,19 +79,19 @@ def consult_band(b: str, satsen: str):
     Returns:
         str: band common name.
     """
-    if satsen == 'LT5':
+    if satsen == 'LT05':
         common_name = {'sr_band1': 'blue', 'sr_band2':'green', 'sr_band3':'red', 'sr_band4':'nir', 'sr_band5':'swir1',
                        'sr_band7':'swir2',
                        'SR_B1': 'blue', 'SR_B2':'green', 'SR_B3':'red', 'SR_B4':'nir', 'SR_B5':'swir1',
                        'SR_B7':'swir2'}
         return common_name[b]
-    elif satsen == 'LE7':
+    elif satsen == 'LE07':
         common_name = {'sr_band1': 'blue', 'sr_band2':'green', 'sr_band3':'red', 'sr_band4':'nir', 'sr_band5':'swir1',
                        'sr_band7':'swir2',
                        'SR_B1': 'blue', 'SR_B2':'green', 'SR_B3':'red', 'SR_B4':'nir', 'SR_B5':'swir1',
                        'SR_B7':'swir2'}
         return common_name[b]
-    elif satsen == 'LC8':
+    elif satsen == 'LC08':
         common_name = {'sr_band1': 'coastal', 'sr_band2':'blue', 'sr_band3':'green', 'sr_band4':'red', 'sr_band5':'nir',
                        'sr_band6':'swir1', 'sr_band7':'swir2',
                        'SR_B1': 'coastal', 'SR_B2':'blue', 'SR_B3':'green', 'SR_B4':'red', 'SR_B5':'nir',

@@ -18,6 +18,30 @@ from typing import List, Optional, Tuple
 from .harmonization_model import process_NBAR
 
 
+LANDSAT_SCENE_PARSER = (
+    r"^L"
+    r"(?P<sensor>\w{1})"
+    r"(?P<satellite>\w{2})"
+    r"_"
+    r"(?P<processingCorrectionLevel>\w{4})"
+    r"_"
+    r"(?P<path>[0-9]{3})"
+    r"(?P<row>[0-9]{3})"
+    r"_"
+    r"(?P<acquisitionYear>[0-9]{4})"
+    r"(?P<acquisitionMonth>[0-9]{2})"
+    r"(?P<acquisitionDay>[0-9]{2})"
+    r"_"
+    r"(?P<processingYear>[0-9]{4})"
+    r"(?P<processingMonth>[0-9]{2})"
+    r"(?P<processingDay>[0-9]{2})"
+    r"_"
+    r"(?P<collectionNumber>\w{2})"
+    r"_"
+    r"(?P<collectionCategory>\w{2})$"
+)
+
+
 def get_landsat_angles(productdir: str, scene_id: str) -> Tuple[str, str, str, str]:
     """Get Landsat angle bands file path.
 
@@ -42,42 +66,51 @@ def get_landsat_angles(productdir: str, scene_id: str) -> Tuple[str, str, str, s
 
 def get_landsat_bands(satsen: str) -> Optional[List[str]]:
     """Retrieve the bands which can be harmonized in Landsat data products."""
-    if satsen == 'LT5' or satsen == 'LE7':
+    if satsen == 'LT05' or satsen == 'LE07':
         return ['sr_band1', 'sr_band2', 'sr_band3', 'sr_band4', 'sr_band5', 'sr_band7']
-    elif satsen == 'LC8':
+    elif satsen == 'LC08':
         return ['SR_B2', 'SR_B3', 'SR_B4', 'SR_B5', 'SR_B6', 'SR_B7']
     return
 
 
-def landsat_harmonize(satsen: str, scene_id: str, productdir: str, target_dir: Optional[str] = None):
-    """Prepare Landsat-7 NBAR.
+def landsat_harmonize(scene_id: str, product_dir: str, target_dir: Optional[str] = None, bands: Optional[List[str]] = None):
+    """Prepare Landsat NBAR.
 
     Args:
-        satsen: Scene Satellite
-        productdir: path to directory containing angle bands.
-        target_dir: path to output result images.
+        scene_id (str) - The Landsat Scene Identifier
+        product_dir (str) - path to directory containing angle bands.
+        target_dir (Optional[str]) - path to output result images.
+        bands (Optional[List[str]]) - List of bands to generate. When "None", use all.
 
     Returns:
         str: path to folder containing result images.
     """
-    productdir = Path(productdir)
+    product_dir = Path(product_dir)
     target_dir = Path(target_dir)
 
-    logging.info(f'Loading Angles from {productdir} ...')
-    sz_path, sa_path, vz_path, va_path = get_landsat_angles(productdir, scene_id)
+    match = re.match(LANDSAT_SCENE_PARSER, scene_id, re.IGNORECASE)
+
+    if not match:
+        raise RuntimeError(f'Invalid Landsat scene id {scene_id}')
+
+    satsen = f'L{match.group("sensor")}{match["satellite"]}'
+
+    logging.info(f'Loading Angles from {product_dir} ...')
+    sz_path, sa_path, vz_path, va_path = get_landsat_angles(product_dir, scene_id)
 
     if target_dir is None:
-        target_dir = productdir.joinpath(Path('HARMONIZED_DATA'))
+        target_dir = product_dir.joinpath(Path('HARMONIZED_DATA'))
 
     target_dir.mkdir(parents=True, exist_ok=True)
 
-    bands = get_landsat_bands(satsen)
+    if bands is None:
+        bands = get_landsat_bands(satsen)
 
-    process_NBAR(productdir, scene_id, bands, sz_path, sa_path, vz_path, va_path, satsen, target_dir)
+    process_NBAR(product_dir, scene_id, bands, sz_path, sa_path, vz_path, va_path, satsen, target_dir)
 
     # Copy quality band
     pattern = re.compile('.*pixel_qa.*')
-    img_list = list(productdir.glob('**/*.tif'))
+    img_list = list(product_dir.glob('**/*.tif'))
     matching_pattern = list(item for item in img_list if pattern.match(str(item)))
 
     if len(matching_pattern) != 0:
@@ -85,7 +118,7 @@ def landsat_harmonize(satsen: str, scene_id: str, productdir: str, target_dir: O
         shutil.copy(qa_path, target_dir)
 
     pattern = re.compile('.*Fmask4.*')
-    img_list = list(productdir.glob('**/*.tif'))
+    img_list = list(product_dir.glob('**/*.tif'))
     matching_pattern = list(item for item in img_list if pattern.match(str(item)))
 
     if len(matching_pattern) != 0:
