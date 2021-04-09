@@ -79,17 +79,23 @@ def consult_band(b: str, satsen: str):
     Returns:
         str: band common name.
     """
-    if satsen == 'LT5':
+    if satsen == 'LT05':
         common_name = {'sr_band1': 'blue', 'sr_band2':'green', 'sr_band3':'red', 'sr_band4':'nir', 'sr_band5':'swir1',
-                       'sr_band7':'swir2'}
+                       'sr_band7':'swir2',
+                       'SR_B1': 'blue', 'SR_B2':'green', 'SR_B3':'red', 'SR_B4':'nir', 'SR_B5':'swir1',
+                       'SR_B7':'swir2'}
         return common_name[b]
-    elif satsen == 'LE7':
+    elif satsen == 'LE07':
         common_name = {'sr_band1': 'blue', 'sr_band2':'green', 'sr_band3':'red', 'sr_band4':'nir', 'sr_band5':'swir1',
-                       'sr_band7':'swir2'}
+                       'sr_band7':'swir2',
+                       'SR_B1': 'blue', 'SR_B2':'green', 'SR_B3':'red', 'SR_B4':'nir', 'SR_B5':'swir1',
+                       'SR_B7':'swir2'}
         return common_name[b]
-    elif satsen == 'LC8':
+    elif satsen == 'LC08':
         common_name = {'sr_band1': 'coastal', 'sr_band2':'blue', 'sr_band3':'green', 'sr_band4':'red', 'sr_band5':'nir',
-                       'sr_band6':'swir1', 'sr_band7':'swir2'}
+                       'sr_band6':'swir1', 'sr_band7':'swir2',
+                       'SR_B1': 'coastal', 'SR_B2':'blue', 'SR_B3':'green', 'SR_B4':'red', 'SR_B5':'nir',
+                       'SR_B6':'swir1', 'SR_B7':'swir2'}
         return common_name[b]
     elif satsen == 'S2A' or satsen == 'S2B':
         common_name = {'sr_band1': 'coastal', 'sr_band2': 'blue', 'sr_band3': 'green', 'sr_band4': 'red',
@@ -381,7 +387,7 @@ def process_NBAR(img_dir, scene_id: str, bands, sz_path, sa_path, vz_path, va_pa
         satsen (str): satellite sensor (S2A or S2B), used for bandpass.
         out_dir: output directory.
     """
-    nodata = -9999
+    nodata = 0
 
     for b in bands:
         logging.info(f"Harmonizing band {b} ...")
@@ -394,7 +400,7 @@ def process_NBAR(img_dir, scene_id: str, bands, sz_path, sa_path, vz_path, va_pa
         if scene_id.startswith('S2'):
             input_file = Path(list(filter(r.match, imgs_in_dir))[0])
         else:
-            _entry = list(Path(img_dir).glob(f'{scene_id}_{b}.tif'))[0]
+            _entry = list(Path(img_dir).glob(f'{scene_id}_{b}.TIF'))[0]
             input_file = Path(_entry.name)
 
         output_file = out_dir.joinpath(Path(input_file.name.replace('_sr_', '_nbar_')).with_suffix('.tif'))
@@ -436,10 +442,25 @@ def process_NBAR(img_dir, scene_id: str, bands, sz_path, sa_path, vz_path, va_pa
                 logging.info("Performing bandpass ...")
                 nbar = bandpassHLS_1_4(nbar, consult_band(b, satsen), satsen).astype(profile['dtype'])
 
-        nbar[numpy.isnan(nbar)] = nodata
-        profile['dtype'] = 'int16'
-
-        with rasterio.open(str(output_file), 'w', **profile) as nbar_dataset:
-            nbar_dataset.write_band(1, nbar.astype('int16'))
+        # nbar[numpy.isnan(nbar)] = nodata
+        logging.info(profile)
+        profile['dtype'] = numpy.intc
+        nbar_dataset = rasterio.open(
+            str(output_file),
+            'w',
+            driver='GTiff',
+            height=profile['height'],
+            width=profile['width'],
+            count=profile['count'],
+            dtype=numpy.intc,#str(resampled_array.dtype),
+            crs=profile['crs'],
+            transform=profile['transform'],
+            nodata=profile['nodata'],
+            compress='deflate'
+        )
+        nbar_dataset.write(nbar.astype(numpy.intc), 1)
+        nbar_dataset.close()
+        # with rasterio.open(str(output_file), 'w', **profile) as nbar_dataset:
+        #     nbar_dataset.write_band(1, nbar.astype('int16'))
 
     return
