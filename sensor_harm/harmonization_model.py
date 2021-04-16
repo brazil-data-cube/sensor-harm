@@ -403,7 +403,7 @@ def process_NBAR(img_dir, scene_id: str, bands, sz_path, sa_path, vz_path, va_pa
             _entry = list(Path(img_dir).glob(f'{scene_id}_{b}.TIF'))[0]
             input_file = Path(_entry.name)
 
-        output_file = out_dir.joinpath(Path(input_file.name.replace('_sr_', '_nbar_')).with_suffix('.tif'))
+        output_file = out_dir.joinpath(Path(input_file.name.replace('_SR_', '_NBAR_')).with_suffix('.tif'))
         img_path = img_dir.joinpath(input_file)
 
         # Prepare template band

@@ -1,6 +1,6 @@
 #
 # This file is part of Sensor Harmonization.
-# Copyright (C) 2020 INPE.
+# Copyright (C) 2020-2021 INPE.
 #
 # Sensor Harmonization (Landsat-8 and Sentinel-2) is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -16,12 +16,10 @@ import sensor_harm
 
 start = time.time()
 
-safel1c = '/path/to/S2/L1C.SAFE'
-sr_dir = '/path/to/S2/SR/images/'  # can also use L2A.SAFE dir
+sentinel2_entry = '/path/to/S2/SR/images/'
 target_dir = '/path/to/output/NBAR/'
-scene_id = 'THE_SCENE_ID'
 
-sensor_harm.sentinel_harmonize(safel1c, sr_dir, target_dir, apply_bandpass=True)
+sensor_harm.sentinel_harmonize(sentinel2_entry, target_dir, apply_bandpass=True)
 
 end = time.time()
 print(f'Duration time: {end - start}')
