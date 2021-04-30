@@ -22,12 +22,10 @@ import s2angs
 from .harmonization_model import process_NBAR
 
 
-def sentinel_harmonize_SAFE(scene_id: str, safel1c: str, safel2a: str, target_dir: Optional[str] = None, apply_bandpass: bool = True):
+def sentinel_harmonize_SAFE(safel2a: str, target_dir: Optional[str] = None, apply_bandpass: bool = True):
     """Prepare Sentinel-2 NBAR from Sen2cor.
 
     Args:
-        scene_id (str): Scene identifier
-        safel1c (str): path to SAFEL1C directory.
         safel2a (str): path to SAFEL2A directory.
         target_dir (str): path to output result images.
         apply_bandpass - Apply the band pass processing. Default is True.
@@ -36,7 +34,7 @@ def sentinel_harmonize_SAFE(scene_id: str, safel1c: str, safel2a: str, target_di
         str: path to folder containing result images.
     """
     # Generating Angle bands
-    sz_path, sa_path, vz_path, va_path = s2angs.gen_s2_ang(str(safel1c))
+    sz_path, sa_path, vz_path, va_path = s2angs.gen_s2_ang(str(safel2a))
 
     if target_dir is None:
         target_dir = safel2a.joinpath('GRANULE', os.listdir(safel2a.joinpath('GRANULE'))[0], 'HARMONIZED_DATA/')
@@ -46,10 +44,11 @@ def sentinel_harmonize_SAFE(scene_id: str, safel1c: str, safel2a: str, target_di
     # Sentinel-2 data set
     satsen = safel2a.name[:3]
     logging.info('SatSen: {}'.format(satsen))
+    scene_id = Path(safel2a).stem
 
     img_dir = safel2a.joinpath('GRANULE', os.listdir(safel2a.joinpath('GRANULE'))[0], 'IMG_DATA/R10m/')
     bands10m = ['B02', 'B03', 'B04', 'B08']
-    process_NBAR(img_dir, bands10m, sz_path, sa_path, vz_path, va_path, satsen, target_dir, apply_bandpass)
+    process_NBAR(img_dir, scene_id, bands10m, sz_path, sa_path, vz_path, va_path, satsen, target_dir, apply_bandpass)
 
     img_dir = safel2a.joinpath('GRANULE', os.listdir(safel2a.joinpath('GRANULE'))[0], 'IMG_DATA/R20m/')
     bands20m = ['B8A', 'B11', 'B12']
@@ -65,7 +64,7 @@ def sentinel_harmonize_SAFE(scene_id: str, safel1c: str, safel2a: str, target_di
     return target_dir
 
 
-def sentinel_harmonize_sr(scene_id, safel1c, sr_dir, target_dir, apply_bandpass=True):
+def sentinel_harmonize_sr(s2_entry, target_dir, apply_bandpass=True):
     """Prepare Sentinel-2 NBAR from LaSRC.
 
     Args:
@@ -79,23 +78,24 @@ def sentinel_harmonize_sr(scene_id, safel1c, sr_dir, target_dir, apply_bandpass=
         str: path to folder containing result images.
     """
     # Generating Angle bands
-    sz_path, sa_path, vz_path, va_path = s2angs.gen_s2_ang(str(safel1c))
+    sz_path, sa_path, vz_path, va_path = s2angs.gen_s2_ang(str(s2_entry))
 
     target_dir.mkdir(parents=True, exist_ok=True)
 
     logging.info('Harmonization ...')
     # Sentinel-2 data set
-    satsen = sr_dir.name[0:3]
+    satsen = s2_entry.name[0:3]
     logging.info(f'SatSen: {satsen}')
+    scene_id = Path(s2_entry).stem
 
     bands = ['sr_band2', 'sr_band3', 'sr_band4', 'sr_band8', 'sr_band8a', 'sr_band11', 'sr_band12']
 
-    process_NBAR(sr_dir, scene_id, bands, sz_path, sa_path, vz_path, va_path, satsen, target_dir, apply_bandpass)
+    process_NBAR(s2_entry, scene_id, bands, sz_path, sa_path, vz_path, va_path, satsen, target_dir, apply_bandpass)
 
     return target_dir
 
 
-def sentinel_harmonize(safel1c, scene_id, reflectance_data, target_dir, apply_bandpass=True):
+def sentinel_harmonize(sentinel2_entry, target_dir, apply_bandpass=True):
     """Check if input surface reflectance is from Sen2cor or LaSRC and direct NBAR processing.
 
     Args:
@@ -104,13 +104,12 @@ def sentinel_harmonize(safel1c, scene_id, reflectance_data, target_dir, apply_ba
         reflectance_data (str): path to directory containing surface reflectance.
         target_dir (str): path to output result images.
     """
-    safel1c = Path(safel1c)
-    reflectance_data = Path(reflectance_data)
+    sentinel2_entry = Path(sentinel2_entry)
     target_dir = Path(target_dir)
 
-    if reflectance_data.name.endswith('.SAFE'):  # Check if was processed with Sen2cor
-        sentinel_harmonize_SAFE(scene_id, safel1c, reflectance_data, target_dir, apply_bandpass)
+    if sentinel2_entry.name.endswith('.SAFE'):  # Check if was processed with Sen2cor
+        sentinel_harmonize_SAFE(sentinel2_entry, target_dir, apply_bandpass)
     else:
-        sentinel_harmonize_sr(scene_id, safel1c, reflectance_data, target_dir, apply_bandpass)
+        sentinel_harmonize_sr(sentinel2_entry, target_dir, apply_bandpass)
 
     return
