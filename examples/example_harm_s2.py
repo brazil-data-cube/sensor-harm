@@ -11,7 +11,7 @@
 # Python Native
 import time
 # 3rdparty
-import sensor_harm
+from sensor_harm.sentinel2 import sentinel_harmonize
 
 
 start = time.time()
@@ -19,7 +19,7 @@ start = time.time()
 sentinel2_entry = '/path/to/S2/SR/images/'
 target_dir = '/path/to/output/NBAR/'
 
-sensor_harm.sentinel_harmonize(sentinel2_entry, target_dir, apply_bandpass=True)
+sentinel_harmonize(sentinel2_entry, target_dir, apply_bandpass=True)
 
 end = time.time()
 print(f'Duration time: {end - start}')

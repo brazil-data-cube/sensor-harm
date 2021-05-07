@@ -11,7 +11,7 @@
 # Python Native
 import time
 # 3rdparty
-import sensor_harm
+from sensor_harm.landsat import landsat_harmonize
 
 
 start = time.time()
