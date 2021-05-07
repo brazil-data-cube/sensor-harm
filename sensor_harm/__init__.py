@@ -8,8 +8,6 @@
 
 """Sensor Harmonization"""
 
-from .landsat import landsat_harmonize
-from .sentinel2 import sentinel_harmonize, sentinel_harmonize_SAFE
 from .version import __version__
 
 __all__ = (
