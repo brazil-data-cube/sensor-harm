@@ -42,15 +42,15 @@ LANDSAT_SCENE_PARSER = (
 )
 
 
-def get_landsat_angles(productdir: str, scene_id: str) -> Tuple[str, str, str, str]:
+def get_landsat_angles(angle_dir: str, scene_id: str) -> Tuple[str, str, str, str]:
     """Get Landsat angle bands file path.
 
     Args:
-        productdir (str): path to directory containing angle bands.
+        angle_dir (str): path to directory containing angle bands.
     Returns:
         sz_path, sa_path, vz_path, va_path: file paths to solar zenith, solar azimuth, view (sensor) zenith and vier (sensor) azimuth.
     """
-    img_list = list(productdir.glob(f'**/{scene_id}*.tif'))
+    img_list = list(angle_dir.glob(f'**/{scene_id}*.tif'))
     logging.info('Load Landsat Angles')
     pattern = re.compile('.*_solar_zenith_.*')
     sz_path = list(item for item in img_list if pattern.match(str(item)))[0]
@@ -73,14 +73,18 @@ def get_landsat_bands(satsen: str) -> Optional[List[str]]:
     return
 
 
-def landsat_harmonize(scene_id: str, product_dir: str, target_dir: Optional[str] = None, bands: Optional[List[str]] = None):
+def landsat_harmonize(scene_id: str, product_dir: str, target_dir: Optional[str] = None, 
+                      bands: Optional[List[str]] = None, angle_dir: Optional[str] = None,
+                      cp_quality_band: Optional[bool] = True):
     """Prepare Landsat NBAR.
 
     Args:
         scene_id (str) - The Landsat Scene Identifier
-        product_dir (str) - path to directory containing angle bands.
+        product_dir (str) - path to directory containing original bands.
         target_dir (Optional[str]) - path to output result images.
         bands (Optional[List[str]]) - List of bands to generate. When "None", use all.
+        angle_dir (Optional[str]) - path to directory containing angle bands.
+        cp_quality_band (Optional[bool]) - copy quality band to target_dir
 
     Returns:
         str: path to folder containing result images.
@@ -95,8 +99,9 @@ def landsat_harmonize(scene_id: str, product_dir: str, target_dir: Optional[str]
 
     satsen = f'L{match.group("sensor")}{match["satellite"]}'
 
-    logging.info(f'Loading Angles from {product_dir} ...')
-    sz_path, sa_path, vz_path, va_path = get_landsat_angles(product_dir, scene_id)
+    angle_dir = Path(angle_dir) if angle_dir else product_dir
+    logging.info(f'Loading Angles from {angle_dir} ...')
+    sz_path, sa_path, vz_path, va_path = get_landsat_angles(angle_dir, scene_id)
 
     if target_dir is None:
         target_dir = product_dir.joinpath(Path('HARMONIZED_DATA'))
@@ -109,20 +114,17 @@ def landsat_harmonize(scene_id: str, product_dir: str, target_dir: Optional[str]
     process_NBAR(product_dir, scene_id, bands, sz_path, sa_path, vz_path, va_path, satsen, target_dir)
 
     # Copy quality band
-    pattern = re.compile('.*pixel_qa.*')
-    img_list = list(product_dir.glob('**/*.tif'))
-    matching_pattern = list(item for item in img_list if pattern.match(str(item)))
+    if cp_quality_band:
+        img_list = list(product_dir.glob('**/*.tif')) or list(product_dir.glob('**/*.TIF'))
+         
+        regex_list = ['.*pixel_qa.*', '.*qa_pixel.*', '.*Fmask4.*']
+        for regex in regex_list:
+            pattern = re.compile(regex, re.IGNORECASE)
+            matching_pattern = list(item for item in img_list if pattern.match(str(item)))
 
-    if len(matching_pattern) != 0:
-        qa_path = matching_pattern[0]
-        shutil.copy(qa_path, target_dir)
-
-    pattern = re.compile('.*Fmask4.*')
-    img_list = list(product_dir.glob('**/*.tif'))
-    matching_pattern = list(item for item in img_list if pattern.match(str(item)))
-
-    if len(matching_pattern) != 0:
-        qa_path = matching_pattern[0]
-        shutil.copy(qa_path, target_dir)
-
+            if len(matching_pattern) != 0:
+                qa_path = matching_pattern[0]
+                shutil.copy(qa_path, target_dir)
+                break
+                
     return target_dir
