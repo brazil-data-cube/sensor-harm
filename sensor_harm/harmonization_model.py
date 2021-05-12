@@ -389,6 +389,8 @@ def process_NBAR(img_dir, scene_id: str, bands, sz_path, sa_path, vz_path, va_pa
     """
     nodata = 0
 
+    output_files = []
+
     for b in bands:
         logging.info(f"Harmonizing band {b} ...")
         # Search for input file
@@ -460,7 +462,12 @@ def process_NBAR(img_dir, scene_id: str, bands, sz_path, sa_path, vz_path, va_pa
         )
         nbar_dataset.write(nbar.astype(numpy.intc), 1)
         nbar_dataset.close()
+
+        output = {}
+        output[b] = output_file
+        output_files.append(output)
+
         # with rasterio.open(str(output_file), 'w', **profile) as nbar_dataset:
         #     nbar_dataset.write_band(1, nbar.astype('int16'))
 
-    return
+    return output_files
