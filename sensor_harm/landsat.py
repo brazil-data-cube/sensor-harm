@@ -111,7 +111,7 @@ def landsat_harmonize(scene_id: str, product_dir: str, target_dir: Optional[str]
     if bands is None:
         bands = get_landsat_bands(satsen)
 
-    process_NBAR(product_dir, scene_id, bands, sz_path, sa_path, vz_path, va_path, satsen, target_dir)
+    output_files = process_NBAR(product_dir, scene_id, bands, sz_path, sa_path, vz_path, va_path, satsen, target_dir)
 
     # Copy quality band
     if cp_quality_band:
@@ -127,4 +127,4 @@ def landsat_harmonize(scene_id: str, product_dir: str, target_dir: Optional[str]
                 shutil.copy(qa_path, target_dir)
                 break
                 
-    return target_dir
+    return target_dir, output_files
