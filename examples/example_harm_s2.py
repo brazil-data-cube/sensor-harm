@@ -10,9 +10,9 @@
 
 # Python Native
 import time
+
 # 3rdparty
 from sensor_harm.sentinel2 import sentinel_harmonize
-
 
 start = time.time()
 

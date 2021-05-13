@@ -1,6 +1,6 @@
 #
 # This file is part of Sensor Harmonization
-# Copyright (C) 2020 INPE.
+# Copyright (C) 2020-2021 INPE.
 #
 # Sensor Harmonization (Landsat-8 and Sentinel-2) is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -16,7 +16,6 @@ from typing import List, Optional, Tuple
 
 # sensor-harm
 from .harmonization_model import process_NBAR
-
 
 LANDSAT_SCENE_PARSER = (
     r"^L"

@@ -1,6 +1,6 @@
 #
 # This file is part of Sensor Harmonization
-# Copyright (C) 2020 INPE.
+# Copyright (C) 2020-2021 INPE.
 #
 # Sensor Harmonization (Landsat-8 and Sentinel-2) is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -21,7 +21,7 @@ import sphinx_rtd_theme
 # -- Project information -----------------------------------------------------
 
 project = 'SENSOR_HARM'
-copyright = '2020, INPE.'
+copyright = '2020-2021, INPE.'
 author = 'Brazil Data Cube Team'
 release = sensor_harm.__version__
 
@@ -61,14 +61,12 @@ exclude_patterns = [
 html_theme = 'sphinx_rtd_theme'
 
 html_theme_options = {
-    'canonical_url': 'https://brazil-data-cube.github.io/',
     'analytics_id': 'XXXXXXXXXX',
     'logo_only': False,
     'display_version': True,
     'prev_next_buttons_location': 'both',
     'style_external_links': True,
     #'vcs_pageview_mode': 'edit',
-    #'github_url': 'https://github.com/brazil-data-cube/wtss.py',
     'style_nav_header_background': '#2980B9',
     'collapse_navigation': True,
     'sticky_navigation': False,
