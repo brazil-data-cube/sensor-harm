@@ -7,11 +7,14 @@
 #
 
 exclude docs/sphinx/_build
+
 include *.py
 include *.rst
 include *.sh
 include LICENSE
 include pytest.ini
+include .editorconfig
+
 recursive-exclude docs/sphinx/_build *
 recursive-include sensor_harm *.py
 recursive-include docs/sphinx *.bat

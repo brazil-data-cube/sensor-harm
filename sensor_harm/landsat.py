@@ -17,7 +17,6 @@ from typing import List, Optional, Tuple
 # sensor-harm
 from .harmonization_model import process_NBAR
 
-
 LANDSAT_SCENE_PARSER = (
     r"^L"
     r"(?P<sensor>\w{1})"

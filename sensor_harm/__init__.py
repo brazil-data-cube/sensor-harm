@@ -6,7 +6,7 @@
 # under the terms of the MIT License; see LICENSE file for more details.
 #
 
-"""Sensor Harmonization"""
+"""Sensor Harmonization."""
 
 from .version import __version__
 

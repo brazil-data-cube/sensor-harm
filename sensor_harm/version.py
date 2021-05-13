@@ -6,6 +6,6 @@
 # under the terms of the MIT License; see LICENSE file for more details.
 #
 
-"""Version information for Sensor Harmonization"""
+"""Version information for Sensor Harmonization."""
 
 __version__ = '0.4.0'
