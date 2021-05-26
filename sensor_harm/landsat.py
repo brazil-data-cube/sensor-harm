@@ -115,7 +115,7 @@ def landsat_harmonize(scene_id: str, product_dir: str, target_dir: Optional[str]
     # Copy quality band
     if cp_quality_band:
         img_list = list(product_dir.glob('**/*.tif')) or list(product_dir.glob('**/*.TIF'))
-         
+
         regex_list = ['.*pixel_qa.*', '.*qa_pixel.*', '.*Fmask4.*']
         for regex in regex_list:
             pattern = re.compile(regex, re.IGNORECASE)
@@ -125,5 +125,5 @@ def landsat_harmonize(scene_id: str, product_dir: str, target_dir: Optional[str]
                 qa_path = matching_pattern[0]
                 shutil.copy(qa_path, target_dir)
                 break
-                
+
     return target_dir, output_files
