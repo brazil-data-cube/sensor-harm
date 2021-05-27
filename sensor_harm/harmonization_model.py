@@ -436,8 +436,10 @@ def process_NBAR(img_dir, scene_id: str, bands, sz_path, sa_path, vz_path, va_pa
             reflectance_img = load_img(img_path, window)
 
             # Apply scale for Landsat Collection-2
-            if (not numpy.all(reflectance_img.mask)) and scene_id.startswith('LC08') and scene_id.split('_')[-2] == '02':
-                reflectance_img =  ((reflectance_img * 0.275)-2000) #Rescale data to 0-10000 -> ((raster1_arr * 0.0000275)-0.2)
+            if (scene_id.startswith('LC08') or scene_id.startswith('LE07') or scene_id.startswith('LT05') or scene_id.startswith('LT04')) and \
+                scene_id.split('_')[-2] == '02' and \
+                (not numpy.all(reflectance_img.mask)):
+                    reflectance_img =  ((reflectance_img * 0.275)-2000) #Rescale data to 0-10000 -> ((raster1_arr * 0.0000275)-0.2)
 
             # Producing NBAR band
             nbar[window.row_off: row_offset, window.col_off: col_offset] = reflectance_img * c_factor
