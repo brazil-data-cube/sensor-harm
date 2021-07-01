@@ -20,7 +20,7 @@ sr_dir = '/path/to/L7/SR/images/'
 target_dir = '/path/to/output/NBAR/'
 scene_id = 'THE_SCENE_ID'
 
-landsat_harmonize('LE7', scene_id, sr_dir, target_dir)
+landsat_harmonize(scene_id, sr_dir, target_dir)
 
 end = time.time()
 print(f'Duration time: {end - start}')
