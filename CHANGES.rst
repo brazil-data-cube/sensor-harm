@@ -9,6 +9,14 @@
 Changes
 =======
 
+Version 0.6.1 (2021-07-01)
+--------------------------
+
+- Support both Landsat Collection 2 and Landsat Collection 1;
+- Renamed get_landsat_angles to landsat_angles
+- Renamed get_landsat_bands to landsat_bands
+- Exception when missing angle bands
+
 
 Version 0.6.0 (2021-06-07)
 --------------------------
