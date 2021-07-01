@@ -51,14 +51,17 @@ def landsat_angles(angle_dir: str, scene_id: str) -> Tuple[str, str, str, str]:
     """
     img_list = list(angle_dir.glob(f'**/{scene_id}*.tif'))
     logging.info('Load Landsat Angles')
-    pattern = re.compile('.*_solar_zenith_.*|.*_SZA.*')
-    sz_path = list(item for item in img_list if pattern.match(str(item)))[0]
-    pattern = re.compile('.*_solar_azimuth_.*|.*_SAA.*')
-    sa_path = list(item for item in img_list if pattern.match(str(item)))[0]
-    pattern = re.compile('.*_sensor_zenith_.*|.*_VZA.*')
-    vz_path = list(item for item in img_list if pattern.match(str(item)))[0]
-    pattern = re.compile('.*_sensor_azimuth_.*|.*_VAA.*')
-    va_path = list(item for item in img_list if pattern.match(str(item)))[0]
+    try:
+        pattern = re.compile('.*_solar_zenith_.*|.*_SZA.*')
+        sz_path = list(item for item in img_list if pattern.match(str(item)))[0]
+        pattern = re.compile('.*_solar_azimuth_.*|.*_SAA.*')
+        sa_path = list(item for item in img_list if pattern.match(str(item)))[0]
+        pattern = re.compile('.*_sensor_zenith_.*|.*_VZA.*')
+        vz_path = list(item for item in img_list if pattern.match(str(item)))[0]
+        pattern = re.compile('.*_sensor_azimuth_.*|.*_VAA.*')
+        va_path = list(item for item in img_list if pattern.match(str(item)))[0]
+    except:
+        raise RuntimeError(f'File not Found: Missing processed Angle bands on {angle_dir}')
 
     return sz_path, sa_path, vz_path, va_path
 
