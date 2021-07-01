@@ -71,12 +71,12 @@ def landsat_bands(satsen: str, collection='02') -> Optional[List[str]]:
     if satsen == 'LT05' or satsen == 'LE07':
         if collection=='01':
             return ['sr_band1', 'sr_band2', 'sr_band3', 'sr_band4', 'sr_band5', 'sr_band7']
-        else:
-            ['SR_B1', 'SR_B2', 'SR_B3', 'SR_B4', 'SR_B5', 'SR_B7']
+        elif collection=='02':
+            return ['SR_B1', 'SR_B2', 'SR_B3', 'SR_B4', 'SR_B5', 'SR_B7']
     elif satsen == 'LC08':
         if collection=='01':
             return ['sr_band2', 'sr_band3', 'sr_band4', 'sr_band5', 'sr_band6', 'sr_band7']
-        else:
+        elif collection=='02':
             return ['SR_B2', 'SR_B3', 'SR_B4', 'SR_B5', 'SR_B6', 'SR_B7']
     return
 

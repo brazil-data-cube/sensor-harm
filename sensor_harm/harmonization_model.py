@@ -430,13 +430,13 @@ def process_NBAR(img_dir, scene_id: str, bands, sz_path, sa_path, vz_path, va_pa
             if dataset_collection == '01':
                 nodata = -9999
                 _extension = 'tif'
-                processing_level = '_sr_'
+                _processing_level = '_sr_'
             elif dataset_collection == '02':
                 _extension = 'TIF'
-                processing_level = '_SR_'
+                _processing_level = '_SR_'
 
             input_file = Path(img_dir).joinpath(f'{scene_id}_{b}.{_extension}')
-            output_file = out_dir.joinpath(Path(input_file.name.replace(processing_level, '_NBAR_')).with_suffix('.tif'))
+            output_file = out_dir.joinpath(Path(input_file.name.replace(_processing_level, '_NBAR_')).with_suffix('.tif'))
 
         img_path = img_dir.joinpath(input_file)
 
