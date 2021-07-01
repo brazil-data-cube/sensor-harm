@@ -33,6 +33,7 @@ def sentinel_harmonize_SAFE(safel2a: str, target_dir: Optional[str] = None, appl
     Returns:
         str: path to folder containing result images.
     """
+    #TODO Check if angles already exists
     # Generating Angle bands
     sz_path, sa_path, vz_path, va_path = s2angs.gen_s2_ang(str(safel2a))
 
@@ -77,6 +78,7 @@ def sentinel_harmonize_sr(s2_entry, target_dir, apply_bandpass=True):
     Returns:
         str: path to folder containing result images.
     """
+    #TODO Check if angles already exists
     # Generating Angle bands
     sz_path, sa_path, vz_path, va_path = s2angs.gen_s2_ang(str(s2_entry))
 
@@ -90,7 +92,7 @@ def sentinel_harmonize_sr(s2_entry, target_dir, apply_bandpass=True):
 
     bands = ['sr_band2', 'sr_band3', 'sr_band4', 'sr_band8', 'sr_band8a', 'sr_band11', 'sr_band12']
 
-    process_NBAR(s2_entry, scene_id, bands, sz_path, sa_path, vz_path, va_path, satsen, target_dir, apply_bandpass)
+    process_NBAR(s2_entry, scene_id, bands, sz_path, sa_path, vz_path, va_path, satsen, target_dir, apply_bandpass, nodata=-9999)
 
     return target_dir
 

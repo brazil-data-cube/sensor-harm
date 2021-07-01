@@ -108,6 +108,32 @@ def consult_band(b: str, satsen: str):
     return
 
 
+def is_landsat(scene_id: str):
+    """Verify if a scene id is from a Landsat image.
+
+    Args:
+        scene_id (str): scene id.
+    Returns:
+        bool: True if it is a Landsat scene id, False otherwise.
+    """
+    if (scene_id.startswith('LC08') or scene_id.startswith('LE07') or scene_id.startswith('LT05') or scene_id.startswith('LT04')):
+        return True
+    return False
+
+
+def is_sentinel2(scene_id: str):
+    """Verify if a scene id is from a Sentinel-2 image.
+
+    Args:
+        scene_id (str): scene id.
+    Returns:
+        bool: True if it is a Sentinel-2 scene id, False otherwise.
+    """
+    if scene_id.startswith('S2'):
+        return True
+    return False
+
+
 def load_raster_resampled(img_path, resample_factor=1/2, window=None):
     """Load and resample image.
 
@@ -125,7 +151,6 @@ def load_raster_resampled(img_path, resample_factor=1/2, window=None):
     with rasterio.open(img_path) as dataset:
         try:
             raster = dataset.read(
-                # 1,
                 out_shape=(
                     1,
                     int(window.height),
@@ -374,7 +399,7 @@ def bandpassHLS_1_4(img, band, satsen):
     return img
 
 
-def process_NBAR(img_dir, scene_id: str, bands, sz_path, sa_path, vz_path, va_path, satsen, out_dir, apply_bandpass=True):
+def process_NBAR(img_dir, scene_id: str, bands, sz_path, sa_path, vz_path, va_path, satsen, out_dir, apply_bandpass=True, dataset_collection=None, nodata=0):
     """Calculate Normalized BRDF Adjusted Reflectance (NBAR).
 
     Args:
@@ -387,7 +412,6 @@ def process_NBAR(img_dir, scene_id: str, bands, sz_path, sa_path, vz_path, va_pa
         satsen (str): satellite sensor (S2A or S2B), used for bandpass.
         out_dir: output directory.
     """
-    nodata = 0
 
     output_files = []
 
@@ -399,13 +423,21 @@ def process_NBAR(img_dir, scene_id: str, bands, sz_path, sa_path, vz_path, va_pa
         logging.debug(list(filter(r.match, imgs_in_dir)))
 
         # TODO: We should use file name. Check which of them have same filename and try to get from some angle band
-        if scene_id.startswith('S2'):
+        if is_sentinel2(scene_id):
             input_file = Path(list(filter(r.match, imgs_in_dir))[0])
-        else:
-            _entry = list(Path(img_dir).glob(f'{scene_id}_{b}.TIF'))[0]
-            input_file = Path(_entry.name)
+            output_file = out_dir.joinpath(Path(input_file).stem + '_NBAR').with_suffix('.tif')
+        elif is_landsat(scene_id):
+            if dataset_collection == '01':
+                nodata = -9999
+                _extension = 'tif'
+                processing_level = '_sr_'
+            elif dataset_collection == '02':
+                _extension = 'TIF'
+                processing_level = '_SR_'
 
-        output_file = out_dir.joinpath(Path(input_file.name.replace('_SR_', '_NBAR_')).with_suffix('.tif'))
+            input_file = Path(img_dir).joinpath(f'{scene_id}_{b}.{_extension}')
+            output_file = out_dir.joinpath(Path(input_file.name.replace(processing_level, '_NBAR_')).with_suffix('.tif'))
+
         img_path = img_dir.joinpath(input_file)
 
         # Prepare template band
@@ -436,10 +468,10 @@ def process_NBAR(img_dir, scene_id: str, bands, sz_path, sa_path, vz_path, va_pa
             reflectance_img = load_img(img_path, window)
 
             # Apply scale for Landsat Collection-2
-            if (scene_id.startswith('LC08') or scene_id.startswith('LE07') or scene_id.startswith('LT05') or scene_id.startswith('LT04')) and \
-                scene_id.split('_')[-2] == '02' and \
-                (not numpy.all(reflectance_img.mask)):
-                    reflectance_img =  ((reflectance_img * 0.275)-2000) #Rescale data to 0-10000 -> ((raster1_arr * 0.0000275)-0.2)
+            if is_landsat(scene_id) and \
+            (not numpy.all(reflectance_img.mask)) and \
+            dataset_collection == '02':
+                reflectance_img =  ((reflectance_img * 0.275)-2000) #Rescale data to 0-10000 -> ((raster1_arr * 0.0000275)-0.2)
 
             # Producing NBAR band
             nbar[window.row_off: row_offset, window.col_off: col_offset] = reflectance_img * c_factor
@@ -450,7 +482,6 @@ def process_NBAR(img_dir, scene_id: str, bands, sz_path, sa_path, vz_path, va_pa
                 logging.info("Performing bandpass ...")
                 nbar = bandpassHLS_1_4(nbar, consult_band(b, satsen), satsen).astype(profile['dtype'])
 
-        # nbar[numpy.isnan(nbar)] = nodata
         logging.info(profile)
         profile['dtype'] = numpy.intc
         nbar_dataset = rasterio.open(
@@ -472,8 +503,5 @@ def process_NBAR(img_dir, scene_id: str, bands, sz_path, sa_path, vz_path, va_pa
         output = {}
         output[b] = output_file
         output_files.append(output)
-
-        # with rasterio.open(str(output_file), 'w', **profile) as nbar_dataset:
-        #     nbar_dataset.write_band(1, nbar.astype('int16'))
 
     return output_files

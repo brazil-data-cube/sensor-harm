@@ -41,8 +41,8 @@ LANDSAT_SCENE_PARSER = (
 )
 
 
-def get_landsat_angles(angle_dir: str, scene_id: str) -> Tuple[str, str, str, str]:
-    """Get Landsat angle bands file path.
+def landsat_angles(angle_dir: str, scene_id: str) -> Tuple[str, str, str, str]:
+    """Retrieve Landsat angle bands file path.
 
     Args:
         angle_dir (str): path to directory containing angle bands.
@@ -63,12 +63,18 @@ def get_landsat_angles(angle_dir: str, scene_id: str) -> Tuple[str, str, str, st
     return sz_path, sa_path, vz_path, va_path
 
 
-def get_landsat_bands(satsen: str) -> Optional[List[str]]:
+def landsat_bands(satsen: str, collection='02') -> Optional[List[str]]:
     """Retrieve the bands which can be harmonized in Landsat data products."""
     if satsen == 'LT05' or satsen == 'LE07':
-        return ['sr_band1', 'sr_band2', 'sr_band3', 'sr_band4', 'sr_band5', 'sr_band7']
+        if collection=='01':
+            return ['sr_band1', 'sr_band2', 'sr_band3', 'sr_band4', 'sr_band5', 'sr_band7']
+        else:
+            ['SR_B1', 'SR_B2', 'SR_B3', 'SR_B4', 'SR_B5', 'SR_B7']
     elif satsen == 'LC08':
-        return ['SR_B2', 'SR_B3', 'SR_B4', 'SR_B5', 'SR_B6', 'SR_B7']
+        if collection=='01':
+            return ['sr_band2', 'sr_band3', 'sr_band4', 'sr_band5', 'sr_band6', 'sr_band7']
+        else:
+            return ['SR_B2', 'SR_B3', 'SR_B4', 'SR_B5', 'SR_B6', 'SR_B7']
     return
 
 
@@ -100,17 +106,19 @@ def landsat_harmonize(scene_id: str, product_dir: str, target_dir: Optional[str]
 
     angle_dir = Path(angle_dir) if angle_dir else product_dir
     logging.info(f'Loading Angles from {angle_dir} ...')
-    sz_path, sa_path, vz_path, va_path = get_landsat_angles(angle_dir, scene_id)
+    sz_path, sa_path, vz_path, va_path = landsat_angles(angle_dir, scene_id)
 
     if target_dir is None:
         target_dir = product_dir.joinpath(Path('HARMONIZED_DATA'))
 
     target_dir.mkdir(parents=True, exist_ok=True)
 
-    if bands is None:
-        bands = get_landsat_bands(satsen)
+    collection = scene_id.split('_')[-2]
 
-    output_files = process_NBAR(product_dir, scene_id, bands, sz_path, sa_path, vz_path, va_path, satsen, target_dir)
+    if bands is None:
+        bands = landsat_bands(satsen, collection)
+
+    output_files = process_NBAR(product_dir, scene_id, bands, sz_path, sa_path, vz_path, va_path, satsen, target_dir, dataset_collection=collection)
 
     # Copy quality band
     if cp_quality_band:
