@@ -15,12 +15,11 @@ import re
 from pathlib import Path
 from typing import Optional
 
-# 3rdparty
-import s2angs
-
 # sensor-harm
 from .harmonization_model import process_NBAR
 
+# 3rdparty
+import s2angs
 
 SENTINEL2_SCENE_PARSER = (
     r"^S"
