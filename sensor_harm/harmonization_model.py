@@ -399,19 +399,21 @@ def bandpassHLS_1_4(img, band, satsen):
     return img
 
 
-def process_NBAR(img_dir, scene_id: str, bands, sz_path, sa_path, vz_path, va_path, satsen, out_dir, apply_bandpass=True, dataset_collection=None, nodata=0):
+def process_NBAR(parsed_sceneid, img_dir, bands, sz_path, sa_path, vz_path, va_path, out_dir, apply_bandpass=True, nodata = 0):
     """Calculate Normalized BRDF Adjusted Reflectance (NBAR).
 
     Args:
+        parsed_sceneid (dict): parsed scene id.
         img_dir (str): input directory.
         bands (list): list of bands to process.
         sz_path (str): solar zenith angle.
         sa_path (str): solar azimuth angle.
         vz_path (str): view (sensor) zenith angle.
         va_path (str): view (sensor) azimuth angle.
-        satsen (str): satellite sensor (S2A or S2B), used for bandpass.
         out_dir: output directory.
+        apply_bandpass (bool): verify if band pass will be applied.
     """
+    scene_id = parsed_sceneid.group(0)
     output_files = []
 
     for b in bands:
@@ -423,14 +425,17 @@ def process_NBAR(img_dir, scene_id: str, bands, sz_path, sa_path, vz_path, va_pa
 
         # TODO: We should use file name. Check which of them have same filename and try to get from some angle band
         if is_sentinel2(scene_id):
+            satsen = f'S{parsed_sceneid["sensor"]}{parsed_sceneid["satellite"]}'
             input_file = Path(list(filter(r.match, imgs_in_dir))[0])
             output_file = out_dir.joinpath(Path(input_file).stem + '_NBAR').with_suffix('.tif')
         elif is_landsat(scene_id):
-            if dataset_collection == '01':
+            satsen = f'L{parsed_sceneid["sensor"]}{parsed_sceneid["satellite"]}'
+            if parsed_sceneid["collectionNumber"] == '01':
                 nodata = -9999
                 _extension = 'tif'
                 _processing_level = '_sr_'
-            elif dataset_collection == '02':
+            elif parsed_sceneid["collectionNumber"] == '02':
+                nodata = 0
                 _extension = 'TIF'
                 _processing_level = '_SR_'
 
@@ -469,7 +474,7 @@ def process_NBAR(img_dir, scene_id: str, bands, sz_path, sa_path, vz_path, va_pa
             # Apply scale for Landsat Collection-2
             if is_landsat(scene_id) and \
             (not numpy.all(reflectance_img.mask)) and \
-            dataset_collection == '02':
+            parsed_sceneid["collectionNumber"] == '02':
                 reflectance_img =  ((reflectance_img * 0.275)-2000) #Rescale data to 0-10000 -> ((raster1_arr * 0.0000275)-0.2)
 
             # Producing NBAR band

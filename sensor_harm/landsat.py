@@ -27,13 +27,9 @@ LANDSAT_SCENE_PARSER = (
     r"(?P<path>[0-9]{3})"
     r"(?P<row>[0-9]{3})"
     r"_"
-    r"(?P<acquisitionYear>[0-9]{4})"
-    r"(?P<acquisitionMonth>[0-9]{2})"
-    r"(?P<acquisitionDay>[0-9]{2})"
+    r"(?P<sensing_date>[0-9]{8})"
     r"_"
-    r"(?P<processingYear>[0-9]{4})"
-    r"(?P<processingMonth>[0-9]{2})"
-    r"(?P<processingDay>[0-9]{2})"
+    r"(?P<processing_date>[0-9]{8})"
     r"_"
     r"(?P<collectionNumber>\w{2})"
     r"_"
@@ -66,8 +62,10 @@ def landsat_angles(angle_dir: str, scene_id: str) -> Tuple[str, str, str, str]:
     return sz_path, sa_path, vz_path, va_path
 
 
-def landsat_bands(satsen: str, collection='02') -> Optional[List[str]]:
+def landsat_bands(parsed_sceneid: str) -> Optional[List[str]]:
     """Retrieve the bands which can be harmonized in Landsat data products."""
+    satsen = f'L{parsed_sceneid["sensor"]}{parsed_sceneid["satellite"]}'
+    collection = parsed_sceneid["collectionNumber"]
     if satsen == 'LT05' or satsen == 'LE07':
         if collection=='01':
             return ['sr_band1', 'sr_band2', 'sr_band3', 'sr_band4', 'sr_band5', 'sr_band7']
@@ -100,12 +98,10 @@ def landsat_harmonize(scene_id: str, product_dir: str, target_dir: Optional[str]
     product_dir = Path(product_dir)
     target_dir = Path(target_dir)
 
-    match = re.match(LANDSAT_SCENE_PARSER, scene_id, re.IGNORECASE)
+    parsed_sceneid = re.match(LANDSAT_SCENE_PARSER, scene_id, re.IGNORECASE)
 
-    if not match:
+    if not parsed_sceneid:
         raise RuntimeError(f'Invalid Landsat scene id {scene_id}')
-
-    satsen = f'L{match.group("sensor")}{match["satellite"]}'
 
     angle_dir = Path(angle_dir) if angle_dir else product_dir
     logging.info(f'Loading Angles from {angle_dir} ...')
@@ -116,12 +112,10 @@ def landsat_harmonize(scene_id: str, product_dir: str, target_dir: Optional[str]
 
     target_dir.mkdir(parents=True, exist_ok=True)
 
-    collection = scene_id.split('_')[-2]
-
     if bands is None:
-        bands = landsat_bands(satsen, collection)
+        bands = landsat_bands(parsed_sceneid)
 
-    output_files = process_NBAR(product_dir, scene_id, bands, sz_path, sa_path, vz_path, va_path, satsen, target_dir, dataset_collection=collection)
+    output_files = process_NBAR(parsed_sceneid, product_dir, bands, sz_path, sa_path, vz_path, va_path, target_dir)
 
     # Copy quality band
     if cp_quality_band:
