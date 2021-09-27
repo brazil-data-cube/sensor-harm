@@ -54,7 +54,7 @@ install_requires = [
     'numpy',
     'rasterio',
     'requests>=2.20',
-    's2angs @ git+https://github.com/brazil-data-cube/sentinel2_angle_bands'
+    's2angs @ git+https://github.com/brazil-data-cube/s2-angs@master#egg=s2angs'
 ]
 
 packages = find_packages()

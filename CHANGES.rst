@@ -9,6 +9,14 @@
 Changes
 =======
 
+Version 0.8.0 (2021-09-27)
+--------------------------
+
+- organize code imports
+- fix s2angs install
+- create output dir folder
+- support docker
+
 Version 0.6.1 (2021-07-01)
 --------------------------
 
