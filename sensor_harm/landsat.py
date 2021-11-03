@@ -8,7 +8,6 @@
 
 """Sensor Harmonization of Landsat data products."""
 
-import os
 import logging
 import re
 import shutil
@@ -97,7 +96,7 @@ def landsat_harmonize(scene_id: str, product_dir: str, target_dir: Optional[str]
         str: path to folder containing result images.
     """
     product_dir = Path(product_dir)
-    target_dir = Path(os.path.join(target_dir, scene_id + '_NBAR'))
+    target_dir = Path(target_dir) / (scene_id + '_NBAR')
 
     parsed_sceneid = re.match(LANDSAT_SCENE_PARSER, scene_id, re.IGNORECASE)
 
