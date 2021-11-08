@@ -29,7 +29,9 @@ try:
         sentinel_harmonize(entry, target_dir, apply_bandpass=True)
     elif sceneid.startswith(('LT04', 'LT05', 'LE07', 'LC08')):
         # Landsat
-        landsat_harmonize(sceneid, entry, target_dir)
+        angle_dir = os.path.join('/mnt/angles-dir/', sceneid)
+
+        landsat_harmonize(sceneid, entry, target_dir, angle_dir=angle_dir)
     else:
         raise
 except:
@@ -37,6 +39,7 @@ except:
     Usage:
     docker run --rm
     -v /path/to/input/:/mnt/input-dir:ro
+    -v /path/to/angles:/mnt/angles-dir:ro
     -v /path/to/output:/mnt/output-dir:rw
     -t sensor-harm '<LANDSAT Sceneid or SENTINEL-2.SAFE>""")
     sys.exit()
