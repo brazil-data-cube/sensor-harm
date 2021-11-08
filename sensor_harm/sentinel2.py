@@ -135,11 +135,12 @@ def sentinel_harmonize(sentinel2_entry, target_dir, apply_bandpass=True):
         target_dir (str): path to output result images.
     """
     sentinel2_entry = Path(sentinel2_entry)
-    target_dir = Path(target_dir) / sentinel2_entry.name.replace('.SAFE', '_NBAR')
 
     if sentinel2_entry.name.endswith('.SAFE'):  # Check if was processed with Sen2cor
+        target_dir = Path(target_dir) / sentinel2_entry.name.replace('.SAFE', '_NBAR')
         sentinel_harmonize_SAFE(sentinel2_entry, target_dir, apply_bandpass)
     else:
+        target_dir = Path(target_dir) / (sentinel2_entry.name + '_NBAR')
         sentinel_harmonize_sr(sentinel2_entry, target_dir, apply_bandpass)
 
     return
