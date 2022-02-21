@@ -1,34 +1,19 @@
 ..
     This file is part of Sensor Harmonization
-    Copyright (C) 2020-2021 INPE.
+    Copyright (C) 2020-2022 INPE.
 
     Sensor Harmonization is free software; you can redistribute it and/or modify it
     under the terms of the MIT License; see LICENSE file for more details.
 
 
-===============================================
-Sensor Harmonization (Landsat-8 and Sentinel-2)
-===============================================
+=====================================================
+Sensor Harmonization (Landsat-4,5,7,8 and Sentinel-2)
+=====================================================
 
 
 .. image:: https://img.shields.io/badge/license-MIT-green
         :target: https://github.com//brazil-data-cube/sensor-harm/blob/master/LICENSE
         :alt: Software License
-
-
-.. image:: https://coveralls.io/repos/github/brazil-data-cube/sensor-harm/badge.svg?branch=master
-        :target: https://coveralls.io/github/brazil-data-cube/sensor-harm?branch=master
-        :alt: Code Coverage Test
-
-
-.. image:: https://readthedocs.org/projects/sensor-harm/badge/?version=latest
-        :target: https://sensor_harm.readthedocs.io/en/latest/
-        :alt: Documentation Status
-
-
-.. image:: https://img.shields.io/badge/lifecycle-maturing-blue.svg
-        :target: https://www.tidyverse.org/lifecycle/#maturing
-        :alt: Software Life Cycle
 
 
 .. image:: https://img.shields.io/github/tag/brazil-data-cube/sensor-harm.svg
@@ -87,8 +72,11 @@ Python Usage
 see:
 
 `Example Landsat 5 <examples/exaple_harm_l5>`_
+
 `Example Landsat 7 <examples/exaple_harm_l7>`_
+
 `Example Landsat 8 <examples/exaple_harm_l8>`_
+
 `Example Sentinel 2 <examples/exaple_harm_s2>`_
 
 
