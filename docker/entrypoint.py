@@ -1,6 +1,6 @@
 ####################################################################################################################
 # This file is part of Sensor Harmonization.
-# Copyright (C) 2020-2021 INPE.
+# Copyright (C) 2020-2022 INPE.
 #
 # Sensor Harmonization (Landsat-8 and Sentinel-2) is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -41,7 +41,7 @@ except:
     -v /path/to/input/:/mnt/input-dir:ro
     -v /path/to/angles:/mnt/angles-dir:ro
     -v /path/to/output:/mnt/output-dir:rw
-    -t sensor-harm '<LANDSAT Sceneid or SENTINEL-2.SAFE>""")
+    -t brazildatacube/sensor-harm '<LANDSAT Sceneid or SENTINEL-2.SAFE>""")
     sys.exit()
 
 end = time.time()
