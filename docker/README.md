@@ -8,10 +8,10 @@ Sensor Harmonization (Landsat-5, Landsat-7, Landsat-8 and Sentinel-2)
 
 ## Installation
 
-1. Run from the docker directory of this repository.
+1. Run from the root of this repository.
 
    ```bash
-   $ docker build -t brazildatacube/sensor-harm .
+   $ ./build.sh
    ```
 
 

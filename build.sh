@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # This file is part of sensor-harm Docker.
-# Copyright (C) 2021 INPE.
+# Copyright (C) 2021-2022 INPE.
 #
 # sensor-harm Docker is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -24,7 +24,7 @@ usage() {
 BASE_IMAGE="ubuntu:ubuntu@sha256:122f506735a26c0a1aff2363335412cfc4f84de38326356d31ee00c2cbe52171" # ubuntu:18.04
 BUILD_MODE=""
 VERSION="latest"
-IMAGENAME="sensorharm"
+IMAGENAME="brazildatacube/sensor-harm"
 
 #
 # Get build options
@@ -53,7 +53,7 @@ done
 #
 # Build a Linux Ubuntu image with all the dependencies already installed
 #
-echo "Building sensorharm Image"
+echo "Building brazildatacube/sensor-harm Image"
 echo "${PWD}"
 
 docker build ${BUILD_MODE} \
