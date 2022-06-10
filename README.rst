@@ -103,4 +103,4 @@ run a docker container mounting an input-dir, an output-dir and providing the fi
 
 .. code-block:: console
 
-    docker run --rm -v /path/to/my/S2_file/:/mnt/input-dir -v /path/to/my/outputs/:/mnt/output-dir sensorharm S2A_MSIL1C_20201013T144731_N0209_R139_T19MGV_20201013T164036.SAFE
+    docker run --rm -v /path/to/my/S2_file/:/mnt/input-dir -v /path/to/my/outputs/:/mnt/output-dir brazildatacube/sensor-harm S2A_MSIL1C_20201013T144731_N0209_R139_T19MGV_20201013T164036.SAFE
