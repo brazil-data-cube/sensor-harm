@@ -22,7 +22,7 @@ Sensor Harmonization (Landsat-4,5,7,8 and Sentinel-2)
 
 
 .. image:: https://img.shields.io/badge/License-GPLv3-blue.svg
-        :target: https://github.com/brazil-data-cube/bdc-collectors/blob/master/LICENSE
+        :target: https://github.com/brazil-data-cube/sensor-harm/blob/master/LICENSE
         :alt: Software License
 
 
