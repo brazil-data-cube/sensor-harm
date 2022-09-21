@@ -30,9 +30,17 @@ Pre-Requirements
 
 The ``Sensor Harmonization`` (``sensor-harm``) depends essentially on:
 
-- `NumPY <https://numpy.org/>`_.
+- Click>=7.0
 
-- `Rasterio <https://rasterio.readthedocs.io/en/latest/>`_
+- jsonschema
+
+- numpy
+
+- rasterio
+
+- requests>=2.20
+
+- `s2angs <https://github.com/brazil-data-cube/s2-angs>`_
 
 
 Clone the software repository
@@ -79,26 +87,35 @@ Install in development mode::
         pip3 install --upgrade setuptools
 
 
-Build the Documentation
-+++++++++++++++++++++++
+Installing via Git
+------------------
+
+.. code-block:: console
+
+    python3 -m pip install git+https://github.com/brazil-data-cube/sensor-harm.git
 
 
-You can generate the documentation based on Sphinx with the following command::
+or
 
-    python setup.py build_sphinx
+.. code-block:: console
 
-
-The above command will generate the documentation in HTML and it will place it under::
-
-    docs/sphinx/_build/html/
-
-
-The above command will generate the documentation in HTML and it will place it under::
-
-    docs/sphinx/_build/html/
+    git clone https://github.com/brazil-data-cube/sensor-harm.git
+    cd s2-angs
+    pip install .
 
 
-You can open the above documentation in your favorite browser, as::
+Building a Docker image
+-----------------------
 
-    firefox docs/sphinx/_build/html/index.html
+Build the image from the root of this repository.
+
+    ```bash
+    $ ./build.sh
+    ```
+
+--no-cache option can be activated by providing `-n` flag; docker base image can be change by providing `-b <baseimage>`. For instance, to build a fresh image one can run from the root of this repository:
+
+    ```bash
+    $ ./build.sh -n
+    ```
 
