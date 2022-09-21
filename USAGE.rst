@@ -26,13 +26,13 @@ Python Usage
 
 see:
 
-`Example Landsat 5 <examples/exaple_harm_l5>`_
+`Example Landsat 5 <examples/example_harm_l5.py>`_
 
-`Example Landsat 7 <examples/exaple_harm_l7>`_
+`Example Landsat 7 <examples/example_harm_l7.py>`_
 
-`Example Landsat 8 <examples/exaple_harm_l8>`_
+`Example Landsat 8 <examples/example_harm_l8.py>`_
 
-`Example Sentinel 2 <examples/exaple_harm_s2>`_
+`Example Sentinel 2 <examples/example_harm_s2.py>`_
 
 
 Docker Usage
