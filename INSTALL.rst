@@ -1,9 +1,19 @@
 ..
-    This file is part of Sensor Harmonization
-    Copyright (C) 2020-2021 INPE.
+    This file is part of Brazil Data Cube sensor-harm.
+    Copyright (C) 2022 INPE.
 
-    Sensor Harmonization (Landsat-8 and Sentinel-2) is free software; you can redistribute it and/or modify it
-    under the terms of the MIT License; see LICENSE file for more details.
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
 
 Installation
@@ -20,9 +30,17 @@ Pre-Requirements
 
 The ``Sensor Harmonization`` (``sensor-harm``) depends essentially on:
 
-- `NumPY <https://numpy.org/>`_.
+- Click>=7.0
 
-- `Rasterio <https://rasterio.readthedocs.io/en/latest/>`_
+- jsonschema
+
+- numpy
+
+- rasterio
+
+- requests>=2.20
+
+- `s2angs <https://github.com/brazil-data-cube/s2-angs>`_
 
 
 Clone the software repository
@@ -69,26 +87,35 @@ Install in development mode::
         pip3 install --upgrade setuptools
 
 
-Build the Documentation
-+++++++++++++++++++++++
+Installing via Git
+------------------
+
+.. code-block:: console
+
+    python3 -m pip install git+https://github.com/brazil-data-cube/sensor-harm.git
 
 
-You can generate the documentation based on Sphinx with the following command::
+or
 
-    python setup.py build_sphinx
+.. code-block:: console
 
-
-The above command will generate the documentation in HTML and it will place it under::
-
-    docs/sphinx/_build/html/
-
-
-The above command will generate the documentation in HTML and it will place it under::
-
-    docs/sphinx/_build/html/
+    git clone https://github.com/brazil-data-cube/sensor-harm.git
+    cd s2-angs
+    pip install .
 
 
-You can open the above documentation in your favorite browser, as::
+Building a Docker image
+-----------------------
 
-    firefox docs/sphinx/_build/html/index.html
+Build the image from the root of this repository.
+
+    ```bash
+    $ ./build.sh
+    ```
+
+--no-cache option can be activated by providing `-n` flag; docker base image can be change by providing `-b <baseimage>`. For instance, to build a fresh image one can run from the root of this repository:
+
+    ```bash
+    $ ./build.sh -n
+    ```
 

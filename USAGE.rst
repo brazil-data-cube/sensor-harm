@@ -16,15 +16,32 @@
     along with this program. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
 
-License
-=======
+Usage
+=====
 
 
-.. include:: ../../LICENSE
+
+Python Usage
+------------
+
+see:
+
+`Example Landsat 5 <examples/example_harm_l5.py>`_
+
+`Example Landsat 7 <examples/example_harm_l7.py>`_
+
+`Example Landsat 8 <examples/example_harm_l8.py>`_
+
+`Example Sentinel 2 <examples/example_harm_s2.py>`_
 
 
-Contact
-=======
+Docker Usage
+------------
+
+run a docker container mounting an input-dir, an output-dir and providing the file name, e.g. S2A_MSIL1C_20201013T144731_N0209_R139_T19MGV_20201013T164036.SAFE.
 
 
-`Brazil Data Cube Team <mailto: brazildatacube@inpe.br>`_
+.. code-block:: console
+
+    docker run --rm -v /path/to/my/S2_file/:/mnt/input-dir -v /path/to/my/outputs/:/mnt/output-dir brazildatacube/sensor-harm S2A_MSIL1C_20201013T144731_N0209_R139_T19MGV_20201013T164036.SAFE
+

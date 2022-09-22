@@ -1,9 +1,19 @@
 ..
-    This file is part of Sensor Harmonization
-    Copyright (C) 2020-2022 INPE.
+    This file is part of Brazil Data Cube sensor-harm.
+    Copyright (C) 2022 INPE.
 
-    Sensor Harmonization is free software; you can redistribute it and/or modify it
-    under the terms of the MIT License; see LICENSE file for more details.
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
 
 =====================================================
@@ -11,8 +21,8 @@ Sensor Harmonization (Landsat-4,5,7,8 and Sentinel-2)
 =====================================================
 
 
-.. image:: https://img.shields.io/badge/license-MIT-green
-        :target: https://github.com//brazil-data-cube/sensor-harm/blob/master/LICENSE
+.. image:: https://img.shields.io/badge/License-GPLv3-blue.svg
+        :target: https://github.com/brazil-data-cube/sensor-harm/blob/master/LICENSE
         :alt: Software License
 
 
@@ -30,77 +40,39 @@ About
 =====
 
 
-A library in Python for generating Landsat-8 and Sentinel-2 NBAR (Nadir BRDF Adjusted Reflectance) products.
+A library in Python for generating Landsat-8 and Sentinel-2 NBAR (Nadir BRDF Adjusted Reflectance) products through the c-factor approach (`Roy et. al, 2016 <https://doi.org/10.1016/j.rse.2016.01.023>`_)() and optional bandpass on Sentinel-2 data (`Claverie et. al, 2017 <https://doi.org/10.1016/j.rse.2018.09.002>`_) to produce NBAR products.
 
 
-Sensor-harm
------------
-
-This script uses Surface Reflectance products as inputs. It uses the c-factor approach (`Roy et. al, 2016 <https://doi.org/10.1016/j.rse.2016.01.023>`_)() and optional bandpass on Sentinel-2 data (`Claverie et. al, 2017 <https://doi.org/10.1016/j.rse.2018.09.002>`_) to produce NBAR products.
+Installation
+============
 
 
-Dependencies
-------------
-
-- Click>=7.0
-- jsonschema
-- numpy
-- rasterio
-- requests>=2.20
-- `s2angs <https://github.com/brazil-data-cube/s2-angs>`_
+See `INSTALL.rst <./INSTALL.rst>`_.
 
 
-Installing via Git
-------------------
-
-.. code-block:: console
-
-    python3 -m pip install git+https://github.com/brazil-data-cube/sensor-harm.git
+Usage
+=====
 
 
-or
-
-.. code-block:: console
-
-    git clone https://github.com/brazil-data-cube/sensor-harm.git
-    cd s2-angs
-    pip install .
-
-Python Usage
-------------
-
-see:
-
-`Example Landsat 5 <examples/exaple_harm_l5>`_
-
-`Example Landsat 7 <examples/exaple_harm_l7>`_
-
-`Example Landsat 8 <examples/exaple_harm_l8>`_
-
-`Example Sentinel 2 <examples/exaple_harm_s2>`_
+See `USAGE.rst <./USAGE.rst>`_.
 
 
-Docker
-------
-
-Build the image from the root of this repository.
-
-    ```bash
-    $ ./build.sh
-    ```
-
---no-cache option can be activated by providing `-n` flag; docker base image can be change by providing `-b <baseimage>`. For instance, to build a fresh image one can run from the root of this repository:
-
-    ```bash
-    $ ./build.sh -n
-    ```
-
-Docker Usage
-------------
-
-run a docker container mounting an input-dir, an output-dir and providing the file name, e.g. S2A_MSIL1C_20201013T144731_N0209_R139_T19MGV_20201013T164036.SAFE.
+License
+=======
 
 
-.. code-block:: console
+.. admonition::
+    Copyright (C) 2020 INPE.
 
-    docker run --rm -v /path/to/my/S2_file/:/mnt/input-dir -v /path/to/my/outputs/:/mnt/output-dir brazildatacube/sensor-harm S2A_MSIL1C_20201013T144731_N0209_R139_T19MGV_20201013T164036.SAFE
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
